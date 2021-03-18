@@ -6,12 +6,12 @@ export default function useAuth(code) {
   const [refreshToken, setRefreshToken] = useState();
   const [expiresIn, setExpiresIn] = useState();
 
+
   useEffect(() => {
     axios
     .post('http://localhost:3001/login', {
         code,
     }).then(res => {
-        console.log(res);
         setAccessToken(res.data.accessToken)
         setRefreshToken(res.data.refreshToken)
         setExpiresIn(res.data.expiresIn)
@@ -23,6 +23,25 @@ export default function useAuth(code) {
     })
   }, [code])
 
+  // runs when token expires and new token is received
+  useEffect(() => {
+    if ( !refreshToken || !expiresIn ) return
+    const interval = setInterval(() => {
+      axios
+      .post('http://localhost:3001/refresh', {
+          refreshToken
+      }).then(res => {
+          setAccessToken(res.data.accessToken)
+          setExpiresIn(res.data.expiresIn)
+      }).catch(() => { 
+        window.location = '/'  
+        // redirects user to root when there's an error
+      })
+    }, (expiresIn - 60) * 1000)
+    // ^ Refreshes 1 minute before expiring
+    
+    return () => clearInterval(interval)
+  }, [refreshToken, expiresIn])
 
   return accessToken
 }

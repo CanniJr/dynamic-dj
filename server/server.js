@@ -13,7 +13,7 @@ const credentials = {
     redirectUri: 'http://localhost:3000',
     clientId: '6d370759b2bf437fb0367458028a5ae2',
     clientSecret: 'd74b52de54534c2d93d7f536d768c248'
-}
+};
 
 // send a POST request for authentication
 app.post('/login', (req, res) => {
@@ -22,17 +22,42 @@ app.post('/login', (req, res) => {
 
     spotifyApi.authorizationCodeGrant(code)
     .then(data => {
-        console.log(data)
         res.json({
             accessToken: data.body.access_token,
             refreshToken: data.body.refresh_token,
             expiresIn: data.body.expires_in
         })
     })
-    .catch((error) => {
-        console.log(error)
+    .catch((err) => {
+        console.log(err)
         res.sendStatus(400)
     })
-})
+});
+
+app.post('/refresh', (req, res) => {
+    const refreshToken = req.body.refreshToken
+    console.log('hi')
+    const spotifyApi = new spotifyWebApi(
+        {
+            redirectUri: 'http://localhost:3000',
+            clientId: '6d370759b2bf437fb0367458028a5ae2',
+            clientSecret: 'd74b52de54534c2d93d7f536d768c248',
+            refreshToken
+        }
+    )
+
+    spotifyApi.refreshAccessToken()
+    .then((data) => {
+        //   console.log('The access token has been refreshed!', data.body);
+          res.json({
+              accessToken: data.body.accessToken,
+              expiresIn: data.body.expiresIn
+          })
+        })
+    .catch((err) => {
+        console.log(err)
+        res.sendStatus(400)
+        })
+});
 
 app.listen(3001)
