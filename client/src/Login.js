@@ -12,7 +12,7 @@ function Login() {
             className='d-flex align-items-center justify-content-center' 
             style={{minHeight: '100vh'}}
         >
-            <a className="btn btn-success btn-lg" href={auth_url}> Login with Spotify
+            <a className="btn btn-success btn-lg" href={auth_url}> Sign In with Spotify
             </a>
         </Container>
     )

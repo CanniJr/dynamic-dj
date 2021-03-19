@@ -10,6 +10,8 @@
         - spotify-web-api-node (Simplify spotify api queries)
         - cors (prevents CORS issue from RESTful requests)
         - body-parser  
+        - lyrics-finder
+        - dotenv
     3. Set up express and follow the spotify-web-api-node docs for authorization.
     4. Grab code params in the URL
 
